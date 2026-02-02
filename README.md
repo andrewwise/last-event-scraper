@@ -1,6 +1,6 @@
-# Last.fm Scripts
+# Last Event Scraper
 
-Scripts for scraping Last.fm event data.
+Scripts for scraping [Last.fm](https://www.last.fm) event data as the Last.fm API does not provide event information.
 
 ## get_events_artists.py
 
