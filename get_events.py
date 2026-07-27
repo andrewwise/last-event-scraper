@@ -10,7 +10,7 @@ import json
 import csv
 from typing import List, Dict, Optional
 from datetime import datetime
-from common import get_all_event_urls, fetch_page, BASE_URL
+from common import get_all_event_urls, fetch_page, BASE_URL, print_progress, write_to_file
 
 
 def get_event_details(event_url: str, verbose: bool = False) -> Optional[Dict[str, str]]:
@@ -182,7 +182,7 @@ def main():
     
     for i, event_url in enumerate(event_urls, 1):
         if not args.verbose:
-            print(f"Processing event {i}/{len(event_urls)}...", end='\r')
+            print_progress(i, len(event_urls), "Processing event")
         else:
             print(f"\nProcessing event {i}/{len(event_urls)}: {event_url}")
         
@@ -205,9 +205,7 @@ def main():
     if args.format == 'list':
         output = format_as_list(events)
         if args.output:
-            with open(args.output, 'w', encoding='utf-8') as f:
-                f.write(output)
-            print(f"\nResults written to: {args.output}")
+            write_to_file(output, args.output, f"\nResults written to: {args.output}")
         else:
             print(f"\nEvents ({len(events)}):")
             print("-" * 50)
@@ -216,9 +214,7 @@ def main():
     elif args.format == 'json':
         output = format_as_json(events)
         if args.output:
-            with open(args.output, 'w', encoding='utf-8') as f:
-                f.write(output)
-            print(f"\nResults written to: {args.output}")
+            write_to_file(output, args.output, f"\nResults written to: {args.output}")
         else:
             print(f"\nEvents ({len(events)}):")
             print(output)

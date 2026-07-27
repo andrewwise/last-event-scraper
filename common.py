@@ -171,3 +171,39 @@ def fetch_page(url: str, verbose: bool = False, max_retries: int = 3) -> Beautif
                     print(f"  Failed after {max_retries} attempts", file=sys.stderr)
     
     return None
+
+
+def print_progress(current: int, total: int, message: str = "Processing"):
+    """
+    Print progress for a long-running operation.
+    
+    Args:
+        current: Current item number (1-indexed)
+        total: Total number of items
+        message: Progress message prefix
+    """
+    print(f"{message} {current}/{total}...", end='\r')
+
+
+def write_to_file(content: str, filename: str, success_message: str = None):
+    """
+    Write content to a file with error handling.
+    
+    Args:
+        content: Content to write
+        filename: Output filename
+        success_message: Optional success message to print
+    
+    Raises:
+        IOError: If writing fails
+    """
+    try:
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write(content)
+        if success_message:
+            print(success_message)
+        else:
+            print(f"Results written to: {filename}")
+    except IOError as e:
+        print(f"Error writing to file: {e}", file=sys.stderr)
+        raise

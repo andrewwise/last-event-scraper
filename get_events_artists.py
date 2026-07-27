@@ -7,7 +7,7 @@ import sys
 import time
 import argparse
 from typing import Set, List
-from common import get_all_event_urls, fetch_page, BASE_URL
+from common import get_all_event_urls, fetch_page, BASE_URL, print_progress, write_to_file
 
 
 def get_artists_from_event(event_url: str, verbose: bool = False) -> Set[str]:
@@ -192,7 +192,7 @@ def main():
     
     for i, event_url in enumerate(event_urls, 1):
         if not args.verbose:
-            print(f"Processing event {i}/{len(event_urls)}...", end='\r')
+            print_progress(i, len(event_urls), "Processing event")
         else:
             print(f"\nProcessing event {i}/{len(event_urls)}: {event_url}")
         
@@ -212,13 +212,6 @@ def main():
         print(f"\nEvents processed: {len(event_urls)}")
         print(f"Events with no artists found: {failed_count}")
         print(f"Total unique artists: {len(all_artists)}")
-    for i, event_url in enumerate(event_urls, 1):
-        print(f"Processing event {i}/{len(event_urls)}...", end='\r')
-        artists = get_artists_from_event(event_url)
-        all_artists.update(artists)
-        time.sleep(5)  # Be nice to the server
-    
-    print()  # New line after progress
     
     # Sort artists alphabetically
     sorted_artists = sort_artists(all_artists, args.ignore_the)
@@ -235,11 +228,8 @@ def main():
     # Output to file or stdout
     if args.output:
         try:
-            with open(args.output, 'w', encoding='utf-8') as f:
-                f.write('\n'.join(output_lines) + '\n')
-            print(f"\nResults written to: {args.output}")
-        except IOError as e:
-            print(f"Error writing to file: {e}", file=sys.stderr)
+            write_to_file('\n'.join(output_lines) + '\n', args.output, f"\nResults written to: {args.output}")
+        except IOError:
             sys.exit(1)
     else:
         for line in output_lines:
